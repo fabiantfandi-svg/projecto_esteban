@@ -1,4 +1,4 @@
-//use CBAgroNoSQL;
+use CBAgroNoSQL;
 
 db.usuarios_profiles.drop();
 db.actividades.drop();
