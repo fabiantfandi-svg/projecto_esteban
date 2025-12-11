@@ -1,0 +1,40 @@
+# Sesiones como STRING
+SET session:1 '{"usuario":"juan","rol":"usuario","balance":1000,"ultimo_acceso":1699588800,"token":"token_123456"}' EX 1800
+SET session:2 '{"usuario":"maria","rol":"admin","balance":2500,"ultimo_acceso":1699588800,"token":"token_234567"}' EX 1800
+SET session:3 '{"usuario":"carlos","rol":"usuario","balance":3200,"ultimo_acceso":1699588800,"token":"token_345678"}' EX 1800
+SET session:4 '{"usuario":"ana","rol":"usuario","balance":1500,"ultimo_acceso":1699588800,"token":"token_456789"}' EX 1800
+SET session:5 '{"usuario":"luis","rol":"usuario","balance":4500,"ultimo_acceso":1699588800,"token":"token_567890"}' EX 1800
+
+# Comprobaciones básicas
+EXISTS session:1
+EXISTS session:2
+EXISTS session:3
+EXISTS session:4
+EXISTS session:5
+
+GET session:1
+GET session:2
+GET session:3
+GET session:4
+GET session:5
+
+TTL session:1
+TTL session:2
+TTL session:3
+TTL session:4
+TTL session:5
+
+# Cuentas como HASH
+HMSET cuenta:1 numero_cuenta "COP100001" cliente_id 1 sucursal_id 1 tipo_cuenta "corriente" saldo 1500000.00 fecha_apertura "2022-01-10"
+HMSET cuenta:2 numero_cuenta "COP100002" cliente_id 2 sucursal_id 1 tipo_cuenta "ahorros" saldo 3200500.00 fecha_apertura "2022-03-15"
+HMSET cuenta:3 numero_cuenta "COP100003" cliente_id 3 sucursal_id 2 tipo_cuenta "corriente" saldo 500000.00 fecha_apertura "2022-06-20"
+HMSET cuenta:4 numero_cuenta "COP100004" cliente_id 4 sucursal_id 2 tipo_cuenta "ahorros" saldo 12000000.00 fecha_apertura "2022-07-11"
+HMSET cuenta:5 numero_cuenta "COP100005" cliente_id 5 sucursal_id 3 tipo_cuenta "corriente" saldo 75250.80 fecha_apertura "2023-02-05"
+
+# Consulta de HASH
+HGETALL cuenta:1
+HGET cuenta:1 saldo
+HGET cuenta:2 saldo
+HGET cuenta:3 saldo
+HGET cuenta:4 saldo
+HGET cuenta:5 saldo

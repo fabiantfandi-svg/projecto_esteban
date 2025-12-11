@@ -1,0 +1,20 @@
+# Conjunto de IDs de cuentas
+SADD cuentas 1 2 3 4 5 6 7 8 9 10
+
+# Historial de accesos con LIST
+LPUSH historial_accesos:juan 1699588800
+LPUSH historial_accesos:juan 1699592400
+LPUSH historial_accesos:juan 1699596000
+LRANGE historial_accesos:juan 0 2
+LRANGE historial_accesos:juan 0 -1
+
+# Ranking de saldos con ZSET
+ZADD ranking_saldos 1000 fabian
+ZADD ranking_saldos 2500 fernanda
+ZADD ranking_saldos 2500 Francisco
+ZADD ranking_saldos 1500 Camilo
+ZADD ranking_saldos 3500 Luisa
+
+# Consultas del ranking
+ZREVRANGE ranking_saldos 0 2 WITHSCORES
+ZREVRANGE ranking_saldos 0 2
