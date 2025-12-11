@@ -1,82 +1,176 @@
+# 📌 Consultas con Aggregation Pipeline – Gestión Bancaria (MongoDB)
 
-# Consultas con Aggregation Framework (MongoDB)
+Este archivo contiene **todas las consultas de Aggregation** para el proyecto de **gestión bancaria**, en un solo bloque de código listo para copiar y pegar.
 
-## 1. Contar cuántos productos hay por categoría
-db.productos.aggregate([
-  { "$group": { "_id": "$categoria", "total": { "$sum": 1 } } }
+---
+
+# Total de dinero depositado por cada cliente
+db.transactions.aggregate([
+  { $match: { type: "deposit" } },
+  {
+    $group: {
+      _id: "$client_id",
+      totalDeposits: { $sum: "$amount" }
+    }
+  },
+  { $sort: { totalDeposits: -1 } }
 ])
 
-## 2. Promedio de precios por categoría
-db.productos.aggregate([
-  { "$group": { "_id": "$categoria", "promedio_precio": { "$avg": "$precio" } } }
+---
+
+#  Total de retiros por cliente
+db.transactions.aggregate([
+  { $match: { type: "withdraw" } },
+  {
+    $group: {
+      _id: "$client_id",
+      totalWithdrawals: { $sum: "$amount" }
+    }
+  },
+  { $sort: { totalWithdrawals: -1 } }
 ])
 
-## 3. Listar productos producidos en invernadero
-db.productos.aggregate([
-  { "$match": { "invernadero": true } }
+---
+
+#  Balance final de cada cuenta (depósitos – retiros)
+db.transactions.aggregate([
+  {
+    $group: {
+      _id: "$account_id",
+      balance: {
+        $sum: {
+          $cond: [
+            { $eq: ["$type", "deposit"] }, "$amount",
+            { $multiply: ["$amount", -1] }
+          ]
+        }
+      }
+    }
+  },
+  { $sort: { balance: -1 } }
 ])
 
-## 4. Total de cantidad disponible por proveedor
-db.productos.aggregate([
-  { "$group": {
-      "_id": "$proveedor.nombre",
-      "total_cantidad": { "$sum": "$cantidad" }
-  }}
+---
+
+# Transacciones con información del cliente (JOIN con $lookup)
+db.transactions.aggregate([
+  {
+    $lookup: {
+      from: "clients",
+      localField: "client_id",
+      foreignField: "_id",
+      as: "client_info"
+    }
+  },
+  { $unwind: "$client_info" },
+  {
+    $project: {
+      _id: 0,
+      client: "$client_info.name",
+      account: "$account_id",
+      amount: 1,
+      type: 1,
+      date: 1
+    }
+  },
+  { $sort: { date: -1 } }
 ])
 
-## 5. Productos con precio mayor a 3000 ordenados de mayor a menor
-db.productos.aggregate([
-  { "$match": { "precio": { "$gt": 3000 } } },
-  { "$sort": { "precio": -1 } }
+---
+
+#  Total de transacciones por tipo
+db.transactions.aggregate([
+  {
+    $group: {
+      _id: "$type",
+      total: { $sum: 1 }
+    }
+  },
+  { $sort: { total: -1 } }
 ])
 
-## 6. Traer solo nombre, precio y categoría (proyección)
-db.productos.aggregate([
-  { "$project": { 
-      "_id": 0,
-      "nombre": 1,
-      "precio": 1,
-      "categoria": 1
-  }}
+---
+
+# Clientes ordenados por total de dinero movido
+db.transactions.aggregate([
+  {
+    $group: {
+      _id: "$client_id",
+      totalMovements: { $sum: "$amount" }
+    }
+  },
+  { $sort: { totalMovements: -1 } }
 ])
 
-## 7. Productos agrupados por categoría con promedio, mínimo y máximo
-db.productos.aggregate([
-  { "$group": {
-      "_id": "$categoria",
-      "promedio_precio": { "$avg": "$precio" },
-      "precio_min": { "$min": "$precio" },
-      "precio_max": { "$max": "$precio" }
-  }}
+---
+
+# Todas las cuentas con datos del cliente
+db.accounts.aggregate([
+  {
+    $lookup: {
+      from: "clients",
+      localField: "client_id",
+      foreignField: "_id",
+      as: "owner"
+    }
+  },
+  { $unwind: "$owner" },
+  {
+    $project: {
+      _id: 0,
+      accountNumber: "$_id",
+      clientName: "$owner.name",
+      balance: 1,
+      type: 1
+    }
+  }
 ])
 
-## 8. Filtrar frutas y mostrar solo las que tengan más de 100 unidades
-db.productos.aggregate([
-  { "$match": { "categoria": "Fruta", "cantidad": { "$gt": 100 } } },
-  { "$project": {
-      "_id": 0,
-      "nombre": 1,
-      "cantidad": 1,
-      "precio": 1
-  }}
+---
+
+# Número total de transacciones por cuenta
+db.transactions.aggregate([
+  {
+    $group: {
+      _id: "$account_id",
+      numTransactions: { $sum: 1 }
+    }
+  },
+  { $sort: { numTransactions: -1 } }
 ])
 
-## 9. Ordenar proveedores por total de productos que suministran
-db.productos.aggregate([
-  { "$group": {
-      "_id": "$proveedor.nombre",
-      "productos_suministrados": { "$sum": 1 }
-  }},
-  { "$sort": { "productos_suministrados": -1 } }
+---
+
+#  Promedio de valor de transacciones por tipo
+db.transactions.aggregate([
+  {
+    $group: {
+      _id: "$type",
+      avgAmount: { $avg: "$amount" }
+    }
+  }
 ])
 
-## 10. Reporte completo por categoría con conteo, promedio y total de inventario
-db.productos.aggregate([
-  { "$group": {
-      "_id": "$categoria",
-      "total_productos": { "$sum": 1 },
-      "promedio_precio": { "$avg": "$precio" },
-      "total_inventario": { "$sum": "$cantidad" }
-  }},
-  { "$sort": { "total_inventario": -1 } }
+---
+
+#  Transacciones en un rango de fechas
+db.transactions.aggregate([
+  {
+    $match: {
+      date: { $gte: ISODate("2025-01-01"), $lte: ISODate("2025-12-31") }
+    }
+  },
+  { $sort: { date: -1 } }
 ])
+
+---
+
+# ✔ Explicación rápida de etapas del Aggregation Pipeline
+
+- **$match:** Filtrar documentos (similar a WHERE).  
+- **$group:** Agrupar para sumar, contar, promediar.  
+- **$project:** Elegir qué campos mostrar.  
+- **$sort:** Ordenar resultados.  
+- **$lookup:** Unir colecciones (JOIN).  
+- **$unwind:** Convertir arrays en documentos individuales.  
+
