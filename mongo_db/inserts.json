@@ -1,0 +1,53 @@
+
+{
+  "clientes": [
+    {
+      "_id": { "$oid": "676f00000100000000000101" },
+      "nombre": "Juan Pérez",
+      "documento": "1012456789",
+      "email": "juan.perez@example.com",
+      "telefono": "3001234567"
+    },
+    {
+      "_id": { "$oid": "676f00000100000000000102" },
+      "nombre": "María Gómez",
+      "documento": "1023344556",
+      "email": "maria.gomez@example.com",
+      "telefono": "3019876543"
+    }
+  ],
+
+  "cuentas": [
+    {
+      "_id": { "$oid": "676f00000200000000000101" },
+      "cliente_id": { "$oid": "676f00000100000000000101" },
+      "tipo": "ahorros",
+      "numero_cuenta": "1002003001",
+      "saldo": 1500000
+    },
+    {
+      "_id": { "$oid": "676f00000200000000000102" },
+      "cliente_id": { "$oid": "676f00000100000000000102" },
+      "tipo": "corriente",
+      "numero_cuenta": "1002003002",
+      "saldo": 2500000
+    }
+  ],
+
+  "transacciones": [
+    {
+      "_id": { "$oid": "676f00000300000000000101" },
+      "cuenta_id": { "$oid": "676f00000200000000000101" },
+      "tipo": "deposito",
+      "monto": 500000,
+      "fecha": { "$date": "2025-01-10T10:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "676f00000300000000000102" },
+      "cuenta_id": { "$oid": "676f00000200000000000102" },
+      "tipo": "retiro",
+      "monto": 300000,
+      "fecha": { "$date": "2025-01-10T11:00:00Z" }
+    }
+  ]
+}
