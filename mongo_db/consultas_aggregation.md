@@ -1,4 +1,4 @@
-# 📌 Consultas con Aggregation Pipeline – Gestión Bancaria (MongoDB)
+# Consultas con Aggregation Pipeline – Gestión Bancaria (MongoDB)
 
 Este archivo contiene **todas las consultas de Aggregation** para el proyecto de **gestión bancaria**, en un solo bloque de código listo para copiar y pegar.
 
