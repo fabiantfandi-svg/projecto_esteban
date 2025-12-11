@@ -7,9 +7,10 @@ Este proyecto integra **tres tecnologías de bases de datos** para cubrir difere
 
 Incluye además documentación técnica, scripts, y configuraciones que permiten ejecutar y evaluar cada módulo por separado.
 
+Y presenta como ejemplo una app  donde el usuario pueda administrar sus transacciones y otro sin fin de movimientos bancarios, con el fin de facilitar la gestion de sus datos,dinero y reducir el tiempo de espera u otras molestias que se presentan al movilizarse a las entidades físicas, excepto cuando sea estrictamente necesario. 
 ---
 
-## 📁 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 projecto_esteban/
@@ -41,18 +42,18 @@ projecto_esteban/
 
 ---
 
-## 🧩 Descripción General del Sistema
+## Descripción General del Sistema
 
-El sistema presenta un enfoque híbrido para aprender y demostrar cómo combinar **tres tipos de motores de bases de datos** en un mismo proyecto académico.
+El sistema presenta un enfoque híbrido para aprender y demostrar cómo combinar **tres tipos de motores de bases de datos** en un  proyecto acerca de un sistema bancario.
 
-### 🎯 Objetivos
+###  Objetivos
 - Comprender para qué escenarios es útil cada base de datos.
 - Implementar scripts funcionales que soporten consultas reales.
 - Trabajar una arquitectura distribuida donde cada módulo cumple un rol.
 
 ---
 
-## 🗄️ 1. Módulo SQL (Sistema Bancario)
+##  1. Módulo SQL (Sistema Bancario)
 
 Ubicación: `/sql/`
 
@@ -66,7 +67,7 @@ Ideal para **operaciones ACID**, integridad referencial y reglas transaccionales
 
 ---
 
-## 🍃 2. Módulo MongoDB
+##  2. Módulo MongoDB
 
 Ubicación: `/mongo_db/`
 
@@ -81,7 +82,7 @@ Usado para manejar datos semiestructurados como registros dinámicos y documento
 
 ---
 
-## ⚡ 3. Módulo Redis
+##  3. Módulo Redis
 
 Ubicación: `/Redis/`
 
@@ -99,22 +100,22 @@ Redis se utiliza para:
 
 ---
 
-## 🧪 Ejecución de los Módulos
+##  Ejecución de los Módulos
 
-### ▶️ MongoDB
+###  MongoDB
 ```
 cd mongo_db
 docker compose up -d
 ```
 
-### ▶️ Redis
+###  Redis
 Es necesario tener Redis instalado o usar Docker:
 ```
 redis-server
 ```
 o
 ```
-docker run -p 6379:6379 redis
+Como es el caso utilzamos redis cloud
 ```
 
 Ejecutar script de conexión:
@@ -122,21 +123,20 @@ Ejecutar script de conexión:
 python conexion.py
 ```
 
-### ▶️ SQL
+###  SQL
 Ejecutar los archivos `.SQL` en tu motor preferido:
 - PostgreSQL
 - MySQL
 - SQL Server
-
 ---
 
-## 💡 Recomendaciones
-- Usar entornos separados para cada tecnología.
-- Probar primero las consultas base antes de automatizar.
-- Leer la documentación técnica incluida.
+## Autores
+-- Kevin martinez
 
----
+--Maikoll Torres
 
-## 📌 Autor
-Proyecto para prácticas en **bases de datos SQL, NoSQL y almacenamiento en memoria**.
+--Harold olivera
+
+--Fabian Torres
+
 
