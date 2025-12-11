@@ -1,58 +1,53 @@
 
-[
-  {
-    "nombre": "Tomate",
-    "categoria": "Hortaliza",
-    "precio": 2500,
-    "cantidad": 120,
-    "invernadero": true,
-    "proveedor": {
-      "nombre": "AgroAndes",
-      "ubicacion": "Boyacá"
+{
+  "clientes": [
+    {
+      "_id": { "$oid": "676f00000100000000000101" },
+      "nombre": "Juan Pérez",
+      "documento": "1012456789",
+      "email": "juan.perez@example.com",
+      "telefono": "3001234567"
+    },
+    {
+      "_id": { "$oid": "676f00000100000000000102" },
+      "nombre": "María Gómez",
+      "documento": "1023344556",
+      "email": "maria.gomez@example.com",
+      "telefono": "3019876543"
     }
-  },
-  {
-    "nombre": "Papa Criolla",
-    "categoria": "Tubérculo",
-    "precio": 1800,
-    "cantidad": 300,
-    "invernadero": false,
-    "proveedor": {
-      "nombre": "Campo Vivo",
-      "ubicacion": "Nariño"
+  ],
+
+  "cuentas": [
+    {
+      "_id": { "$oid": "676f00000200000000000101" },
+      "cliente_id": { "$oid": "676f00000100000000000101" },
+      "tipo": "ahorros",
+      "numero_cuenta": "1002003001",
+      "saldo": 1500000
+    },
+    {
+      "_id": { "$oid": "676f00000200000000000102" },
+      "cliente_id": { "$oid": "676f00000100000000000102" },
+      "tipo": "corriente",
+      "numero_cuenta": "1002003002",
+      "saldo": 2500000
     }
-  },
-  {
-    "nombre": "Lechuga",
-    "categoria": "Hortaliza",
-    "precio": 900,
-    "cantidad": 200,
-    "invernadero": true,
-    "proveedor": {
-      "nombre": "VerdeFresco",
-      "ubicacion": "Cundinamarca"
+  ],
+
+  "transacciones": [
+    {
+      "_id": { "$oid": "676f00000300000000000101" },
+      "cuenta_id": { "$oid": "676f00000200000000000101" },
+      "tipo": "deposito",
+      "monto": 500000,
+      "fecha": { "$date": "2025-01-10T10:00:00Z" }
+    },
+    {
+      "_id": { "$oid": "676f00000300000000000102" },
+      "cuenta_id": { "$oid": "676f00000200000000000102" },
+      "tipo": "retiro",
+      "monto": 300000,
+      "fecha": { "$date": "2025-01-10T11:00:00Z" }
     }
-  },
-  {
-    "nombre": "Aguacate Hass",
-    "categoria": "Fruta",
-    "precio": 4500,
-    "cantidad": 80,
-    "invernadero": false,
-    "proveedor": {
-      "nombre": "Frutos del Sur",
-      "ubicacion": "Antioquia"
-    }
-  },
-  {
-    "nombre": "Fresa",
-    "categoria": "Fruta",
-    "precio": 5200,
-    "cantidad": 150,
-    "invernadero": true,
-    "proveedor": {
-      "nombre": "AgroBerry",
-      "ubicacion": "Santander"
-    }
-  }
-]
+  ]
+}
