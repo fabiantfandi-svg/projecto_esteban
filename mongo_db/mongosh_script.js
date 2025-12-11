@@ -1,184 +1,128 @@
-use CBAgroNoSQL;
 
-db.usuarios_profiles.drop();
-db.actividades.drop();
-db.evidencias.drop();
+use BankSystemNoSQL;
 
-db.createCollection("usuarios_profiles", {
+// Eliminación de colecciones previas
+db.user_profiles.drop();
+db.notifications.drop();
+db.login_logs.drop();
+
+
+// ----------------------
+// COLECCIÓN: user_profiles
+// ----------------------
+db.createCollection("user_profiles", {
   validator: {
     $jsonSchema: {
       bsonType: "object",
-      required: ["usuarioId", "email", "fechaRegistro"],
+      required: ["userId", "email", "createdAt"],
       properties: {
-        usuarioId: { bsonType: "string" },
-        nombre: { bsonType: "string" },
+        userId: { bsonType: "string" },
         email: { bsonType: "string", pattern: "^.+@.+\\..+$" },
-        fechaRegistro: { bsonType: "date" },
-        preferencias: { bsonType: "object" },
-        contacto: { bsonType: "array" },
-        roles: { bsonType: "array" },
-        meta: { bsonType: "object" },
+        nombre: { bsonType: "string" },
+        preferencias: {
+          bsonType: "object",
+          properties: {
+            tema: { bsonType: "string" },
+            idioma: { bsonType: "string" },
+            notificaciones: { bsonType: "bool" }
+          }
+        },
+        createdAt: { bsonType: "date" },
         ultimoLogin: { bsonType: "date" }
       }
     }
   }
 });
 
-db.createCollection("actividades", {
+
+// ----------------------
+// COLECCIÓN: notifications
+// ----------------------
+db.createCollection("notifications", {
   validator: {
     $jsonSchema: {
       bsonType: "object",
-      required: ["actividadId", "usuarioId", "tipo", "fecha"],
+      required: ["userId", "mensaje", "fecha"],
       properties: {
-        actividadId: { bsonType: "string" },
-        usuarioId: { bsonType: "string" },
-        tipo: { bsonType: "string" },
-        cultivo: { bsonType: "object" },
+        userId: { bsonType: "string" },
+        mensaje: { bsonType: "string" },
+        leido: { bsonType: "bool" },
+        fecha: { bsonType: "date" }
+      }
+    }
+  }
+});
+
+
+// ----------------------
+// COLECCIÓN: login_logs
+// ----------------------
+db.createCollection("login_logs", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["userId", "fecha", "ip"],
+      properties: {
+        userId: { bsonType: "string" },
         fecha: { bsonType: "date" },
-        mediciones: { bsonType: ["array", "null"] },
-        resultado: { bsonType: ["object", "null"] },
-        geo: { bsonType: ["object", "null"] },
-        tags: { bsonType: ["array", "null"] }
+        ip: { bsonType: "string" },
+        dispositivo: { bsonType: "string" }
       }
     }
   }
 });
 
-db.createCollection("evidencias", {
-  validator: {
-    $jsonSchema: {
-      bsonType: "object",
-      required: ["evidenciaId", "url", "fechaSubida"],
-      properties: {
-        evidenciaId: { bsonType: "string" },
-        actividadId: { bsonType: "string" },
-        usuarioId: { bsonType: "string" },
-        tipoArchivo: { bsonType: "string" },
-        url: { bsonType: "string" },
-        metadatos: { bsonType: "object" },
-        fechaSubida: { bsonType: "date" },
-        expiresAt: { bsonType: "date" },
-        tags: { bsonType: "array" }
-      }
-    }
-  }
-});
 
-db.usuarios_profiles.createIndex({ usuarioId: 1 }, { unique: true });
-db.usuarios_profiles.createIndex({ email: 1 }, { unique: true });
+// ----------------------
+// ÍNDICES
+// ----------------------
+db.user_profiles.createIndex({ userId: 1 }, { unique: true });
+db.user_profiles.createIndex({ email: 1 }, { unique: true });
 
-db.actividades.createIndex({ actividadId: 1 }, { unique: true });
-db.actividades.createIndex({ usuarioId: 1, fecha: -1 });
+db.notifications.createIndex({ userId: 1, fecha: -1 });
 
-db.evidencias.createIndex({ evidenciaId: 1 }, { unique: true });
-db.evidencias.createIndex({ actividadId: 1 });
-db.evidencias.createIndex({ fechaSubida: -1 });
+db.login_logs.createIndex({ userId: 1 });
+db.login_logs.createIndex({ fecha: -1 });
 
-db.evidencias.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-db.usuarios_profiles.insertMany([
+// ----------------------
+// INSERTS DE EJEMPLO
+// ----------------------
+db.user_profiles.insertMany([
   {
-    usuarioId: "user_001",
+    userId: "user001",
     nombre: "Ana Gómez",
-    email: "ana.gomez@example.com",
-    fechaRegistro: new Date("2025-01-10T08:00:00Z"),
-    preferencias: { idioma: "es", tema: "oscuro", notificaciones: true },
-    contacto: [{ tipo: "telefono", valor: "+573001112233" }],
-    roles: ["productor"],
-    meta: { finca: "Finca La Esperanza", areaHa: 4.5 },
-    ultimoLogin: new Date("2025-03-05T10:00:00Z")
+    email: "ana@example.com",
+    preferencias: { tema: "oscuro", idioma: "es", notificaciones: true },
+    createdAt: new Date(),
+    ultimoLogin: new Date()
   },
   {
-    usuarioId: "user_002",
+    userId: "user002",
     nombre: "Carlos Pérez",
-    email: "carlos.perez@example.com",
-    fechaRegistro: new Date("2025-02-02T12:30:00Z"),
-    preferencias: { idioma: "en", tema: "claro", notificaciones: false },
-    contacto: [{ tipo: "telefono", valor: "+573009887766" }],
-    roles: ["técnico", "auditor"],
-    meta: { empresa: "AgroTech" },
-    ultimoLogin: new Date("2025-03-06T09:00:00Z")
+    email: "carlos@example.com",
+    preferencias: { tema: "claro", idioma: "en", notificaciones: false },
+    createdAt: new Date(),
+    ultimoLogin: new Date()
   }
 ]);
 
-db.actividades.insertMany([
-  {
-    actividadId: "act_1001",
-    usuarioId: "user_001",
-    tipo: "siembra",
-    cultivo: { nombre: "Tomate", variedad: "Cherry", loteId: "lote_01" },
-    fecha: new Date("2025-03-01T07:30:00Z"),
-    mediciones: [ { nombre: "ph", valor: 6.5, unidad: "" }, { nombre: "humedad", valor: 34, unidad: "%" } ],
-    resultado: { rendimientoEstimado: 1200, observaciones: "Buen crecimiento inicial" },
-    geo: { lat: -31.4201, lon: -64.1836 },
-    tags: ["siembra", "primavera"]
-  },
-  {
-    actividadId: "act_1002",
-    usuarioId: "user_001",
-    tipo: "riego",
-    cultivo: { nombre: "Tomate", variedad: "Cherry", loteId: "lote_01" },
-    fecha: new Date("2025-03-10T06:00:00Z"),
-    mediciones: [ { nombre: "humedad", valor: 45, unidad: "%" } ],
-    resultado: { observaciones: "Necesita control de plagas" },
-    tags: ["riego"]
-  },
-  {
-    actividadId: "act_2001",
-    usuarioId: "user_002",
-    tipo: "inspeccion",
-    cultivo: { nombre: "Maíz", variedad: "Híbrido A", loteId: "lote_05" },
-    fecha: new Date("2025-03-02T09:00:00Z"),
-    mediciones: [ { nombre: "altura", valor: 120, unidad: "cm" } ],
-    resultado: { observaciones: "Plagas controladas" },
-    tags: ["inspeccion", "maiz"]
-  }
+db.notifications.insertMany([
+  { userId: "user001", mensaje: "Tu saldo ha cambiado", leido: false, fecha: new Date() },
+  { userId: "user002", mensaje: "Nuevo inicio de sesión detectado", leido: false, fecha: new Date() }
 ]);
 
-db.evidencias.insertMany([
-  {
-    evidenciaId: "ev_9001",
-    actividadId: "act_1001",
-    usuarioId: "user_001",
-    tipoArchivo: "image/jpeg",
-    url: "https://storage.example.com/evidencias/ev_9001.jpg",
-    metadatos: { tamañoBytes: 345678, ancho: 1920, alto: 1080, formato: "jpg" },
-    fechaSubida: new Date("2025-03-01T08:00:00Z"),
-    tags: ["tomate", "siembra"]
-  },
-  {
-    evidenciaId: "ev_9002",
-    actividadId: "act_1002",
-    usuarioId: "user_001",
-    tipoArchivo: "application/pdf",
-    url: "https://storage.example.com/evidencias/ev_9002.pdf",
-    metadatos: { tamañoBytes: 123456 },
-    fechaSubida: new Date("2025-03-10T06:10:00Z"),
-    tags: ["riego", "informe"],
-    expiresAt: new Date(Date.now() + 30*24*60*60*1000) // expira en 30 días
-  }
+db.login_logs.insertMany([
+  { userId: "user001", fecha: new Date(), ip: "192.168.0.10", dispositivo: "Chrome" },
+  { userId: "user002", fecha: new Date(), ip: "192.168.0.25", dispositivo: "Android" }
 ]);
 
-// --- Ejemplos CRUD rápidos
 
-db.usuarios_profiles.findOne({ usuarioId: "user_001" });
-
-db.usuarios_profiles.updateOne(
-  { usuarioId: "user_001" },
-  { $set: { "preferencias.tema": "claro" } }
-);
-
-db.actividades.updateOne(
-  { actividadId: "act_1001" },
-  { $push: { mediciones: { nombre: "nitrogeno", valor: 12, unidad: "mg/kg" } } }
-);
-
-db.evidencias.deleteOne({ evidenciaId: "ev_9002" });
-
-db.actividades.aggregate([
-  { $match: { usuarioId: "user_001" } },
-  { $project: { actividadId:1, tipo:1, fecha:1, year: { $year: "$fecha" }, month: { $month: "$fecha" } } },
-  { $group: { _id: { year: "$year", month: "$month" }, totalActividades: { $sum: 1 }, tipos: { $addToSet: "$tipo" } } },
-  { $sort: { "_id.year": 1, "_id.month": 1 } },
-  { $project: { periodo: { $concat: [{ $toString: "$_id.year" }, "-", { $toString: "$_id.month" }] }, totalActividades: 1, tipos:1, _id:0 } }
+// ----------------------
+// EJEMPLO DE AGGREGATION (estilo bancario)
+// ----------------------
+db.notifications.aggregate([
+  { $match: { userId: "user001" } },
+  { $project: { _id: 0, mensaje: 1, fecha: 1, leido: 1 } },
+  { $sort: { fecha: -1 } }
 ]);
