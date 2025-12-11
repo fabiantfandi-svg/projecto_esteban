@@ -2,7 +2,7 @@
 
 ---
 
-# 📄 **4. mongo_client.js**  
+#  **4. mongo_client.js**  
 *(Cliente Node.js para conectarse a MongoDB y probar consultas)*
 
 ```js
@@ -14,7 +14,7 @@ const client = new MongoClient(uri);
 async function run() {
   try {
     await client.connect();
-    console.log("✔ Conectado a MongoDB");
+    console.log("Conectado a MongoDB");
 
     const db = client.db("BankSystemNoSQL");
 
